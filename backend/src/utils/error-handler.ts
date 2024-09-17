@@ -1,6 +1,7 @@
 import { ErrorRequestHandler, RequestHandler } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
+import env from '@/providers/env-config';
 import logger from '@/utils/logger';
 
 // Handle all undefined routes and respond with 404 Not Found
@@ -13,7 +14,7 @@ const handleNotFound: RequestHandler = (_req, res) => {
 
 // Middleware to respond with an appropriate error message based on the environment
 const handleErrorResponse: ErrorRequestHandler = (err, _req, res) => {
-  const isProduction = process.env.NODE_ENV === 'production';
+  const isProduction = env.NODE_ENV === 'production';
 
   // Log the error to the console (or wherever your logger is configured)
   logger.error({
