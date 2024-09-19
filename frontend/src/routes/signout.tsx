@@ -3,9 +3,9 @@ import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/signout')({
   beforeLoad: shouldBeLoggedOut,
-  component: Logout,
+  component: SignOut,
 })
 
-function Logout() {
-  return <div> Logging out...</div>
+function SignOut() {
+  return <div> Signing out...</div>
 }
