@@ -8,7 +8,7 @@ import env from '@/providers/env-config';
 import authRouter from '@/routes/auth';
 import healthCheckRouter from '@/routes/health-check';
 import userRouter from '@/routes/user';
-import errorHandler from '@/utils/error-handler';
+import { handleErrorResponse, handleNotFound } from '@/utils/error-handler';
 import jwt from '@/utils/jwt';
 import requestLogger from '@/utils/request-logger';
 
@@ -61,6 +61,9 @@ app.use('/auth', authRouter);
 app.use('/user', userRouter);
 
 // error handlers
-app.use(errorHandler());
+app.use(handleNotFound);
+
+// 404 handlers
+app.use(handleErrorResponse);
 
 export default app;

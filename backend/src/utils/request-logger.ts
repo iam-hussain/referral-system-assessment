@@ -16,6 +16,7 @@ const requestLogger = () => {
     serializers: {
       req: (req) => `${req.method} ${req.url} from ${req.remoteAddress}:${req.remotePort}`,
       res: (res) => `status: ${res.statusCode}`,
+      err: () => undefined,
     },
     customSuccessMessage: (res) => {
       if (res.statusCode === 404) {
