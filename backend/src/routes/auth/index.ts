@@ -1,0 +1,122 @@
+import express, { Router } from 'express';
+import { StatusCodes } from 'http-status-codes';
+import passport from 'passport';
+import { Strategy } from 'passport-twitter';
+
+import database from '@/providers/database';
+import env from '@/providers/env-config';
+import generateNanoID from '@/utils/generate-nano-id';
+import jwt from '@/utils/jwt';
+import { redirectResponder, responder, ResponseStatus, ServiceResponse } from '@/utils/response';
+
+// Passport with Twitter Strategy
+passport.use(
+  new Strategy(
+    {
+      consumerKey: env.TWITTER_APP_KEY,
+      consumerSecret: env.TWITTER_APP_SECRET,
+      callbackURL: 'http://localhost:4000/auth/twitter/callback',
+    },
+    async (token, tokenSecret, profile, done) => {
+      return done(null, { id: profile.id, name: profile.displayName });
+    }
+  )
+);
+
+const authRouter: Router = (() => {
+  const router = express.Router();
+
+  router.get('/me', async (req, res) => {
+    const unauthorizedResponse = new ServiceResponse(ResponseStatus.Success, 'pong', null, StatusCodes.UNAUTHORIZED);
+
+    if (!req.context?.id) {
+      return responder(unauthorizedResponse, res);
+    }
+
+    const user = await database.user.findUnique({ where: { id: req.context.id } });
+
+    if (!user) {
+      return responder(unauthorizedResponse, res);
+    }
+
+    return new ServiceResponse(ResponseStatus.Success, 'User found', user, StatusCodes.OK);
+  });
+
+  router.get('/twitter', (req, res, next) => {
+    // Capture referral code from query parameters
+    const referralCode = req.query.referralCode;
+
+    if (referralCode && typeof referralCode === 'string') {
+      // Store referral code in session
+      req.session.referralCode = referralCode;
+    }
+
+    // Proceed to authentication
+    return passport.authenticate('twitter')(req, res, next);
+  });
+
+  router.get('/twitter/callback', passport.authenticate('twitter', { session: false }), async (req, res) => {
+    // Retrieve referral code from session
+    const referralCode = req.session?.referralCode;
+
+    if (referralCode) {
+      // Clear the referral code from session
+      delete req.session?.referralCode;
+    }
+
+    const twitterUser = req.user || undefined;
+
+    if (!twitterUser?.id) {
+      return redirectResponder(res, `http://localhost:3000/dashboard?status=0`);
+    }
+
+    const createdAt = new Date();
+
+    const user = await database.user.upsert({
+      create: {
+        name: twitterUser.name,
+        twitterId: twitterUser.id,
+        referralCode: generateNanoID(),
+        createdAt,
+      },
+      update: {},
+      where: { twitterId: twitterUser.id },
+    });
+
+    if (referralCode && createdAt.getTime() === new Date(user.createdAt).getTime()) {
+      await database.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          referee: {
+            connect: {
+              referralCode,
+            },
+            update: {
+              data: {
+                points: { increment: 10 },
+              },
+            },
+          },
+        },
+      });
+    }
+
+    const accessToken = await jwt.encode({ id: user.id });
+    return redirectResponder(res, `http://localhost:3000/dashboard?status=1&token=${accessToken}`);
+  });
+
+  router.get('/logout', function (req, res, next) {
+    req.logout(function (err) {
+      if (err) {
+        return next(err);
+      }
+      res.redirect('/');
+    });
+  });
+
+  return router;
+})();
+
+export default authRouter;

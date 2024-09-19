@@ -8,19 +8,28 @@ const prisma = new PrismaClient({
 
 async function seed() {
   // Insert the data into Prisma models
+
   await prisma.user.createMany({
     data: [
       {
         name: 'Alice',
         referralCode: generateNanoID(),
+        twitterId: generateNanoID(18),
       },
       {
         name: 'Bob',
         referralCode: generateNanoID(),
+        twitterId: generateNanoID(18),
       },
       {
-        name: 'Dan',
+        name: 'Charlie',
         referralCode: generateNanoID(),
+        twitterId: generateNanoID(18),
+      },
+      {
+        name: 'David',
+        referralCode: generateNanoID(),
+        twitterId: generateNanoID(18),
       },
     ],
   });

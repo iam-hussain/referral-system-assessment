@@ -16,10 +16,16 @@ datasource db {
 model User {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   name          String
-  twitterId     String?
-  walletAddress String?
+  twitterId     String   @unique
+  walletAddress String[] @default([])
   referralCode  String   @unique
   points        Int      @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  // Self-relation for referrals
+  referee   User?   @relation(name: "Referrals", fields: [refereeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  refereeId String? @db.ObjectId
+
+  referred User[] @relation(name: "Referrals")
 }

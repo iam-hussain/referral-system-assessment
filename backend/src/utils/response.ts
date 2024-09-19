@@ -21,8 +21,12 @@ export class ServiceResponse<T = null> {
   }
 }
 
-export const responder = (serviceResponse: any, response: Response, code: number = 200) => {
-  return response.status(serviceResponse?.code || code).send(serviceResponse);
+export const responder = (payload: any, response: Response, code: number = 200) => {
+  return response.status(payload?.code || code).send(payload);
+};
+
+export const redirectResponder = (response: Response, url: string, statusCode: number = 302) => {
+  return response.redirect(statusCode, url);
 };
 
 export const validateRequest = (schema: ZodSchema) => (req: Request, res: Response, next: NextFunction) => {

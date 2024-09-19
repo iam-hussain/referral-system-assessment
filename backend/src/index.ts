@@ -1,7 +1,6 @@
 import env from '@/providers/env-config';
 import app from '@/providers/server';
-
-import logger from './utils/logger';
+import logger from '@/utils/logger';
 
 const server = app.listen(env.PORT, () => {
   const { NODE_ENV, HOST, PORT } = env;
