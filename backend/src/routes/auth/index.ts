@@ -28,26 +28,6 @@ const authRouter: Router = (() => {
   const router = express.Router();
 
   router.get(
-    '/me',
-    asyncHandler(async (req, res) => {
-      const unauthorizedResponse = new ServiceResponse(ResponseStatus.Success, 'pong', null, StatusCodes.UNAUTHORIZED);
-
-      if (!req.context?.id) {
-        return responder(unauthorizedResponse, res);
-      }
-
-      const user = await database.user.findUnique({ where: { id: req.context.id } });
-
-      if (!user) {
-        return responder(unauthorizedResponse, res);
-      }
-
-      const response = new ServiceResponse(ResponseStatus.Success, 'User found', user, StatusCodes.OK);
-      return responder(response, res);
-    })
-  );
-
-  router.get(
     '/twitter',
     asyncHandler((req, res, next) => {
       // Capture referral code from query parameters
