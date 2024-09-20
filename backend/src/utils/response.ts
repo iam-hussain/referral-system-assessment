@@ -1,6 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
-import { ZodSchema } from 'zod';
+import { Response } from 'express';
 
 export enum ResponseStatus {
   Success,
@@ -27,14 +25,4 @@ export const responder = (payload: any, response: Response, code: number = 200) 
 
 export const redirectResponder = (response: Response, url: string, statusCode: number = 302) => {
   return response.redirect(statusCode, url);
-};
-
-export const validateRequest = (schema: ZodSchema) => (req: Request, res: Response, next: NextFunction) => {
-  try {
-    schema.parse({ body: req.body, query: req.query, params: req.params });
-    next();
-  } catch (err) {
-    const statusCode = StatusCodes.BAD_REQUEST;
-    res.status(statusCode).send(err);
-  }
 };
