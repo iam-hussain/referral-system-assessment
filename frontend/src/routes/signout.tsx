@@ -10,21 +10,19 @@ export const Route = createFileRoute("/signout")({
 
 function SignOut() {
   const navigate = useNavigate();
-  const {  isLoading } = useQuery(fetchLogout());
-  
-  useEffect(() => {
-    removeCookieAsync(cookieNames.access_token)
-  }, [])
+  const { isLoading } = useQuery(fetchLogout());
 
   useEffect(() => {
-    if(!isLoading) {
+    removeCookieAsync(cookieNames.access_token);
+  }, []);
+
+  useEffect(() => {
+    if (!isLoading) {
       navigate({
-        to: "/signup"
-      })
+        to: "/signup",
+      });
     }
-  }, [isLoading])
-  
-
+  }, [isLoading]);
 
   return <div> Signing out...</div>;
 }

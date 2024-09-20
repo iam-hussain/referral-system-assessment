@@ -7,7 +7,7 @@ export default {
   decode: (token: string) => {
     try {
       const decoded = jwt.verify(token, env.JWT_SECRET);
-      return decoded as { data: {id: string} };
+      return decoded as { data: { id: string } };
     } catch (err) {
       logger.error(err);
       return null;

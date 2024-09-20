@@ -19,16 +19,24 @@ function Home() {
       <Box preset={"stack-center"}>
         <Typography variant={"h3"}>Welcome to Home Page</Typography>
         <CustomLink to="/dashboard">See my dashboard</CustomLink>
-        <CustomLink variant={'destructive'} to="/signout" className="absolute top-5 right-5">SignOut</CustomLink>
+        <CustomLink
+          variant={"destructive"}
+          to="/signout"
+          className="absolute top-5 right-5"
+        >
+          SignOut
+        </CustomLink>
 
         <Box>
           {isLoading && <Typography>Loading...</Typography>}
-          {data && <Box preset={'stack-center'} className="gap-0">
-            <Typography variant={'h3'}>Hello, {data.payload.name}</Typography>
-            <Typography>ID: {data.payload.id}</Typography>
-            <Typography>Twitter ID:  {data.payload.twitterId}</Typography>
-            <Typography>Points:  {data.payload.points}</Typography>
-            </Box>}
+          {data && (
+            <Box preset={"stack-center"} className="gap-0">
+              <Typography variant={"h3"}>Hello, {data.payload.name}</Typography>
+              <Typography>ID: {data.payload.id}</Typography>
+              <Typography>Twitter ID: {data.payload.twitterId}</Typography>
+              <Typography>Points: {data.payload.points}</Typography>
+            </Box>
+          )}
         </Box>
       </Box>
     </Box>

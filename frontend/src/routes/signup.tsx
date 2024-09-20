@@ -53,7 +53,7 @@ function SignUp() {
 
   useEffect(() => {
     if (token) {
-      setCookieAsync(cookieNames.access_token, token)
+      setCookieAsync(cookieNames.access_token, token);
       if (!notified.current) {
         toast.success("You have been logged in successfully");
         notified.current = "done";

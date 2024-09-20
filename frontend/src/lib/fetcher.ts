@@ -26,10 +26,10 @@ const fetcher = async (
       // cache: "no-store",
     });
 
-    // if (response.status === 401) {
-    //   window.location.href = '/signout';
-    //   return; 
-    // }
+    if (response.status === 401) {
+      window.location.href = "/signout";
+      return;
+    }
 
     const responseData = await response.json();
 
