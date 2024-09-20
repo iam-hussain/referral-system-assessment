@@ -6,6 +6,14 @@ const prisma = new PrismaClient({
 
 async function truncate() {
   // Delete items in all tables
+  await prisma.user.deleteMany({
+    where: {
+      refereeId: {
+        not: null,
+      },
+    },
+  });
+
   await prisma.user.deleteMany();
 
   console.log('All records have been deleted');

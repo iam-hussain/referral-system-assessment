@@ -41,8 +41,9 @@ app.use((req: any, res, next) => {
 
     if (accessToken) {
       const decoded = jwt.decode(accessToken);
-      if (decoded?.id) {
-        context = { id: decoded.id };
+
+      if (decoded?.data?.id) {
+        context = { id: decoded?.data?.id };
       }
     }
   }

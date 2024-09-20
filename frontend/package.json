@@ -7,6 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --config .prettierrc --write .",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -42,9 +44,14 @@
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
     "postcss": "^8.4.47",
+    "prettier": "3.3.3",
     "tailwindcss": "^3.4.12",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1"
+  },
+  "lint-staged": {
+    "**/*": "npm run format",
+    "**/*.{js,ts}": "npm run lint:fix"
   }
 }

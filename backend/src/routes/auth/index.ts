@@ -10,6 +10,8 @@ import generateNanoID from '@/utils/generate-nano-id';
 import jwt from '@/utils/jwt';
 import { redirectResponder, responder, ResponseStatus, ServiceResponse } from '@/utils/response';
 
+const frontendBaseURL = 'http://localhost:5173';
+
 // Passport with Twitter Strategy
 passport.use(
   new Strategy(
@@ -58,7 +60,13 @@ const authRouter: Router = (() => {
       const twitterUser = req.user || undefined;
 
       if (!twitterUser?.id) {
-        return redirectResponder(res, `http://localhost:3000/dashboard?status=0`);
+        const redirect = new URL(`${frontendBaseURL}/signup`);
+        if (referralCode) {
+          redirect.searchParams.append('referralCode', referralCode);
+        }
+        redirect.searchParams.append('failed', 'yes');
+
+        return redirectResponder(res, redirect.toString());
       }
 
       const createdAt = new Date();
@@ -94,8 +102,11 @@ const authRouter: Router = (() => {
         });
       }
 
-      const accessToken = await jwt.encode({ id: user.id });
-      return redirectResponder(res, `http://localhost:3000/dashboard?status=1&token=${accessToken}`);
+      const accessToken = (await jwt.encode({ id: user.id })) as string;
+      const redirect = new URL(`${frontendBaseURL}/signup`);
+      redirect.searchParams.append('token', accessToken);
+
+      return redirectResponder(res, redirect.toString());
     })
   );
 

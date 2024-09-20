@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { cookieNames, getCookieAsync } from "./cookies";
 
 export interface FetcherOptions {
@@ -6,15 +5,17 @@ export interface FetcherOptions {
   body?: any;
 }
 
+const baseURL = import.meta.env.VITE_BACKEND_ENDPOINT;
+
 const fetcher = async (
   path: string,
-  options?: FetcherPropsOptions
+  options?: FetcherPropsOptions,
 ): Promise<any> => {
   const { method = "GET", header = {}, body = {} } = options || {};
 
   try {
     const token = await getCookieAsync(cookieNames.access_token);
-    const response = await fetch(path, {
+    const response = await fetch(`${baseURL}${path}`, {
       method,
       headers: {
         "Content-Type": "application/json",
@@ -24,6 +25,11 @@ const fetcher = async (
       ...(method !== "GET" ? { body: JSON.stringify(body) } : {}),
       // cache: "no-store",
     });
+
+    // if (response.status === 401) {
+    //   window.location.href = '/signout';
+    //   return; 
+    // }
 
     const responseData = await response.json();
 
