@@ -25,7 +25,6 @@ npm install
 npm run prisma:generate
 
 cp .env.example .env
-
 ```
 
 Update the ENV variables in the `.env` file, most importantly 
@@ -37,14 +36,12 @@ In case of using the fresh database
 
 ```
 npm run prisma:deploy
-
 ```
 
 If you want reset the Database with clean seed data\
 
 ```
 npm run prisma:reset
-
 ```
 
 To run server
